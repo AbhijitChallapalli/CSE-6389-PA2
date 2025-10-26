@@ -1,4 +1,4 @@
-# GNN for Alzheimer’s Disease (AD) Classification using Brain Connectivity
+# GCN for Alzheimer’s Disease (AD) Classification using Brain Connectivity
 
 ## Overview
 
@@ -8,8 +8,6 @@ This repository implements a Graph Convolutional Network (GCN) to perform **bina
 - **FC (functional connectivity):** used as **node features**. We optionally apply Fisher z-transform and then **standardize** either globally per subject or row-wise per node.
 - **Model:** a compact, regularized **two-layer GCN** with a small MLP head and **global mean pooling**.
 - **Evaluation:** Stratified **k-fold** cross-validation (default 5-fold), reporting **Accuracy**, **Balanced Accuracy**, **F1**, and **ROC-AUC**. We also plot a confusion matrix per fold.
-
-> This README follows the structure and tone of your previous project’s documentation and report, adapted to the GNN setting.
 
 ## Dataset
 
