@@ -34,6 +34,19 @@ project_root/
     └── StructuralConnectivity.txt
 ```
 
+## Literature-informed design rationale
+
+We reviewed recent works combining **FC & SC with GNNs** and distilled the following takeaways for a small dataset (N=20):
+
+- **Joint-GCN (DTI + rs-fMRI, joint graph):** builds separate SC and FC graphs and adds **learnable inter-network links** between matching ROIs; shared encoders and fusion typically outperform single-modality GCNs. _Takeaway:_ **light cross-modal coupling helps**, but adds complexity.
+- **MMTGCN (Mutual Multi-Scale Triplet GCN):** multi-scale graphs and triplet interactions capture higher-order relationships; shows robust gains but is heavier to implement. _Takeaway:_ **multi-scale and modality-aware branches** can improve robustness, but may overfit with very small N.
+- **GCNNs for AD spectrum:** two-layer GCNs with **GCN normalization** and **graph-level pooling** are strong **baselines** on connectome data. _Takeaway:_ a **compact two-layer GCN** is a solid starting point.
+- **SC ↔ FC relation with GCN encoders:** SC provides a **stable anatomical backbone** that constrains FC; using SC as the message-passing graph and injecting FC as features is principled. _Takeaway:_ **use SC for topology** and **FC as features**.
+
+### What we implement (aligned with the above)
+
+Given the dataset size, we adopt the **simplest defensible** design: **single-branch GCN over SC** with **FC as node features**. We deliberately **omit top-k sparsification** to match the final code and keep preprocessing minimal and reproducible. A dual-branch fusion or a cross-modal gate is left as **future work/ablation**, consistent with Joint-GCN’s motivation.
+
 ## Preprocessing & Graph Construction
 
 ### Structural Connectivity (SC) → Adjacency
@@ -49,15 +62,21 @@ project_root/
 2. **Standardize** either per subject (global) or **row-wise** per node.
 3. Use the resulting 150-d feature vector at each node (the row corresponding to that node).
 
-## Model
+## Model Architecture
 
-We use a lightweight, regularized **GCN** suitable for small-N neuroimaging datasets:
+We developed a **two-layer GCN** with batch normalization, dropout, and a small MLP head. Below is a narrative description mirroring the style in your provided template:
 
-- Input node features: 150-d (from FC)
-- Two GCN layers (message passing with pre-normalized \(\hat A\))
-- Global mean pooling
-- MLP head (hidden → hidden → logits), with dropout
-  This design reflects common practice in connectomics: **use SC as stable topology** and inject FC as features.
+> We began with a dual-branch idea inspired by Joint-GCN (an SC branch and an FC graph branch with late fusion). In early trials and based on the small sample size (N=20), we simplified to a **single-branch design** to reduce parameters and stabilize training. SC serves as the message-passing topology (after GCN normalization), while FC provides node features. We retained **batch normalization** and **dropout** for regularization and used **global mean pooling** to obtain graph-level embeddings. This compact setup echoes prior connectome GCN baselines and aligns with literature that treats SC as a stable anatomical scaffold and FC as a functional signal injected at the nodes.
+
+**Final architecture (per subject):**
+
+- **Input:** SC-derived \(\hat A\) ∈ \(\mathbb{R}^{150\times 150}\), FC-derived features \(X\) ∈ \(\mathbb{R}^{150\times 150}\).
+- Linear(150 → 64) → ReLU → Dropout(0.5)
+- GCN layer (64 → 64) with pre-normalized \(\hat A\) → ReLU → Dropout(0.5)
+- GCN layer (64 → 64) → **Global mean pool** over nodes → 64-d vector
+- MLP head: Linear(64 → 64) → ReLU → Dropout(0.5) → Linear(64 → 2)
+
+This balances parameter efficiency and representational power for small-N connectomics.
 
 ## Training & Cross-Validation
 
