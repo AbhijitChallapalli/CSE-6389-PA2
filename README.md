@@ -160,12 +160,16 @@ project_root/
 
 ## References
 
-1. Kipf, T. N., & Welling, M. (2017, April). _Semi-supervised classification with graph convolutional networks_. International Conference on Learning Representations (ICLR). [https://arxiv.org/abs/1609.02907](https://arxiv.org/abs/1609.02907) ([arXiv][1])
+1. Kipf, T. N., & Welling, M. (2017, April). _Semi-supervised classification with graph convolutional networks_. International Conference on Learning Representations (ICLR). [https://arxiv.org/abs/1609.02907](https://arxiv.org/abs/1609.02907)
 
-2. Li, Y., Wei, Q., Adeli, E., Pohl, K. M., & Zhao, Q. (2022). _Joint graph convolution for analyzing brain structural and functional connectome_. In **Medical Image Computing and Computer Assisted Intervention – MICCAI 2022** (Lecture Notes in Computer Science). Springer. [https://doi.org/10.1007/978-3-031-16431-6_22](https://doi.org/10.1007/978-3-031-16431-6_22) ([MICCAI Conferences][2])
+2. Li, Y., Wei, Q., Adeli, E., Pohl, K. M., & Zhao, Q. (2022). _Joint graph convolution for analyzing brain structural and functional connectome_. In **Medical Image Computing and Computer Assisted Intervention – MICCAI 2022** (Lecture Notes in Computer Science). Springer. [https://doi.org/10.1007/978-3-031-16431-6_22](https://doi.org/10.1007/978-3-031-16431-6_22)
 
-3. Yao, D., Liu, M., Lin, C., Li, H., Zhang, J., & Shen, D. (2021). A mutual multi-scale triplet graph convolutional network for classification of brain disorders using functional or structural connectivity. _IEEE Transactions on Medical Imaging, 40_(4), 1279–1289. [https://doi.org/10.1109/TMI.2021.3051604](https://doi.org/10.1109/TMI.2021.3051604) ([PMC][3])
+3. Yao, D., Liu, M., Lin, C., Li, H., Zhang, J., & Shen, D. (2021). A mutual multi-scale triplet graph convolutional network for classification of brain disorders using functional or structural connectivity. _IEEE Transactions on Medical Imaging, 40_(4), 1279–1289. [https://doi.org/10.1109/TMI.2021.3051604](https://doi.org/10.1109/TMI.2021.3051604) 
 
+<<<<<<< HEAD
 4. Li, Y., Shafipour, R., Mateos, G., & Zhang, Z. (2019, November). _Mapping brain structural connectivities to functional networks via graph encoder–decoder with interpretable latent embeddings_. In **2019 IEEE Global Conference on Signal and Information Processing (GlobalSIP)**. [https://www.hajim.rochester.edu/ece/sites/gmateos/pubs/brain/SCFC_GLOBALSIP19.pdf](https://www.hajim.rochester.edu/ece/sites/gmateos/pubs/brain/SCFC_GLOBALSIP19.pdf)
+=======
+4. Li, Y., Shafipour, R., Mateos, G., & Zhang, Z. (2019, November). _Mapping brain structural connectivities to functional networks via graph encoder–decoder with interpretable latent embeddings_. In **2019 IEEE Global Conference on Signal and Information Processing (GlobalSIP)**. [https://www.hajim.rochester.edu/ece/sites/gmateos/pubs/brain/SCFC_GLOBALSIP19.pdf](https://www.hajim.rochester.edu/ece/sites/gmateos/pubs/brain/SCFC_GLOBALSIP19.pdf) 
+>>>>>>> 52288995490b19ea8281c5f69af5aeb420749631
 
-5. Liu, J., Ma, G., Jiang, F., Lu, C.-T., Yu, P. S., & Ragin, A. B. (2019). Community-preserving graph convolutions for structural and functional joint embedding of brain networks. _arXiv Preprint_. [https://arxiv.org/abs/1911.03583](https://arxiv.org/abs/1911.03583) ([arXiv][6])
+5. Liu, J., Ma, G., Jiang, F., Lu, C.-T., Yu, P. S., & Ragin, A. B. (2019). Community-preserving graph convolutions for structural and functional joint embedding of brain networks. _arXiv Preprint_. [https://arxiv.org/abs/1911.03583](https://arxiv.org/abs/1911.03583) 
