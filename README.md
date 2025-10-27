@@ -34,24 +34,24 @@ project_root/
     └── StructuralConnectivity.txt
 ```
 
-## Literature-informed design rationale
+## Literature-Review for the model
 
-We reviewed recent works combining **FC & SC with GNNs** and distilled the following takeaways for a small dataset (N=20):
+I reviewed recent works combining **FC & SC with GNNs** and distilled the following takeaways for a small dataset (N=20):
 
 - **Joint-GCN (DTI + rs-fMRI, joint graph):** builds separate SC and FC graphs and adds **learnable inter-network links** between matching ROIs; shared encoders and fusion typically outperform single-modality GCNs. _Takeaway:_ **light cross-modal coupling helps**, but adds complexity.
 - **MMTGCN (Mutual Multi-Scale Triplet GCN):** multi-scale graphs and triplet interactions capture higher-order relationships; shows robust gains but is heavier to implement. _Takeaway:_ **multi-scale and modality-aware branches** can improve robustness, but may overfit with very small N.
 - **GCNNs for AD spectrum:** two-layer GCNs with **GCN normalization** and **graph-level pooling** are strong **baselines** on connectome data. _Takeaway:_ a **compact two-layer GCN** is a solid starting point.
 - **SC ↔ FC relation with GCN encoders:** SC provides a **stable anatomical backbone** that constrains FC; using SC as the message-passing graph and injecting FC as features is principled. _Takeaway:_ **use SC for topology** and **FC as features**.
 
-### What we implement (aligned with the above)
+### What I implemented
 
-Given the dataset size, we adopt the **simplest defensible** design: **single-branch GCN over SC** with **FC as node features**. We deliberately **omit top-k sparsification** to match the final code and keep preprocessing minimal and reproducible. A dual-branch fusion or a cross-modal gate is left as **future work/ablation**, consistent with Joint-GCN’s motivation.
+Given the dataset size, I adopted the **simplest defensible** design: **single-branch GCN over SC** with **FC as node features**. A dual-branch fusion or a cross-modal gate is left as **future work/ablation**, consistent with Joint-GCN’s motivation.
 
 ## Preprocessing & Graph Construction
 
 ### Structural Connectivity (SC) → Adjacency
 
-1. Symmetrize and zero the diagonal (if needed by data source).
+1. Symmetrize and zero the diagonal.
 2. `log1p` to compress heavy-tailed tract count distributions.
 3. Optional unit scaling to [0, 1].
 4. Add self-loops and compute **GCN normalization:** \(\hat A = D^{-1/2}(A + I)D^{-1/2}\).
@@ -64,13 +64,13 @@ Given the dataset size, we adopt the **simplest defensible** design: **single-br
 
 ## Model Architecture
 
-We developed a **two-layer GCN** with batch normalization, dropout, and a small MLP head. Below is a narrative description mirroring the style in your provided template:
+I developed a **two-layer GCN** with batch normalization, dropout, and a small MLP head.
 
-> We began with a dual-branch idea inspired by Joint-GCN (an SC branch and an FC graph branch with late fusion). In early trials and based on the small sample size (N=20), we simplified to a **single-branch design** to reduce parameters and stabilize training. SC serves as the message-passing topology (after GCN normalization), while FC provides node features. We retained **batch normalization** and **dropout** for regularization and used **global mean pooling** to obtain graph-level embeddings. This compact setup echoes prior connectome GCN baselines and aligns with literature that treats SC as a stable anatomical scaffold and FC as a functional signal injected at the nodes.
+> I began with a dual-branch idea inspired by Joint-GCN (an SC branch and an FC graph branch with late fusion). In early trials and based on the small sample size (N=20), I simplified it to a **single-branch design** to reduce parameters and stabilize training. SC serves as the message-passing topology (after GCN normalization), while FC provides node features. I retained **batch normalization** and **dropout** for regularization and used **global mean pooling** to obtain graph-level embeddings. This compact setup echoes prior connectome GCN baselines and aligns with literature that treats SC as a stable anatomical scaffold and FC as a functional signal injected at the nodes.
 
 **Final architecture (per subject):**
 
-- **Input:** SC-derived \(\hat A\) ∈ \(\mathbb{R}^{150\times 150}\), FC-derived features \(X\) ∈ \(\mathbb{R}^{150\times 150}\).
+- **Input:** SC-derived features, FC-derived features Each 150 x 150.
 - Linear(150 → 64) → ReLU → Dropout(0.5)
 - GCN layer (64 → 64) with pre-normalized \(\hat A\) → ReLU → Dropout(0.5)
 - GCN layer (64 → 64) → **Global mean pool** over nodes → 64-d vector
@@ -108,7 +108,7 @@ pip install -r requirements.txt
 python train.py
 ```
 
-Key arguments (examples):
+Key arguments:
 
 - `k_folds=5` – number of folds in StratifiedKFold
 - `epochs=200` – max epochs (early stopping usually stops earlier)
@@ -121,7 +121,7 @@ Key arguments (examples):
 - Confusion matrix images: `cm_fold_1.png`, `cm_fold_2.png`, ...
 - Mean metrics over folds printed at the end
 
-## Ablation Study (suggested)
+## Ablation Study
 
 - **FC role:** FC as adjacency (|z|, sparsified) versus FC as features (current baseline)
 - **Normalization choices:** with/without Fisher z-transform; global vs row-wise standardization
@@ -132,7 +132,7 @@ Key arguments (examples):
 - Fixed seeds for NumPy and PyTorch via `set_seed(...)`
 - Deterministic settings for cuDNN (as compatible)
 
-## Repository Structure (example)
+## Repository Structure
 
 ```
 project_root/
@@ -147,7 +147,7 @@ project_root/
 
 ## Related Work and Rationale
 
-- **GCN normalization:** \(\hat A = D^{-1/2}(A + I)D^{-1/2}\) has become the standard for stable message passing.
+- **GCN normalization:** $\hat{A} = D^{-1/2}(A + I)D^{-1/2}$ has become the standard for stable message passing.
 - **SC as topology, FC as features:** SC provides a relatively stable anatomical backbone across subjects, while FC contributes condition-dependent connectivity patterns. This split is supported by connectomics literature and helps avoid issues with signed FC edges in vanilla GCNs.
 - **Compact backbones:** With only 20 subjects, small models with strong regularization reduce overfitting risk while remaining interpretable.
 
@@ -155,7 +155,3 @@ project_root/
 
 - Kipf & Welling, Semi-Supervised Classification with Graph Convolutional Networks, ICLR 2017.
 - General connectomics practice for SC/FC modelling and graph normalization in neuroimaging literature.
-
-## License
-
-MIT . See `LICENSE`.
