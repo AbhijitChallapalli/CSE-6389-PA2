@@ -4,7 +4,7 @@
 
 This repository implements a Graph Convolutional Network (GCN) to perform **binary classification** of subjects as **Alzheimer’s Disease (AD)** or **Cognitively Normal (CN)** using **functional connectivity (FC)** and **structural connectivity (SC)** matrices. The emphasis of this project is on **methodology, analysis, and experimental design** rather than raw accuracy.
 
-- **SC (structural connectivity):** used as the **graph topology** (adjacency). We apply log1p compression, optional unit scaling, add self-loops, and perform **GCN symmetric normalization** \(\hat A = D^{-1/2}(A + I)D^{-1/2}\).
+- **SC (structural connectivity):** used as the **graph topology** (adjacency). We apply log1p compression, optional unit scaling, add self-loops, and perform **GCN symmetric normalization** $\hat{A} = D^{-1/2}(A + I)D^{-1/2}$.
 - **FC (functional connectivity):** used as **node features**. We optionally apply Fisher z-transform and then **standardize** either globally per subject or row-wise per node.
 - **Model:** a compact, regularized **two-layer GCN** with a small MLP head and **global mean pooling**.
 - **Evaluation:** Stratified **k-fold** cross-validation (default 5-fold), reporting **Accuracy**, **Balanced Accuracy**, **F1**, and **ROC-AUC**. We also plot a confusion matrix per fold.
@@ -92,11 +92,18 @@ This balances parameter efficiency and representational power for small-N connec
 
 ```bash
 git clone https://github.com/AbhijitChallapalli/CSE-6389-PA2.git
+```
+
+```bash
 cd CSE-6389-PA2
 python -m venv .venv && source .venv/bin/activate  # (Linux/Mac)
+```
 
-# .venv\Scripts\activate  (Windows PowerShell)
+```
+# .venv\Scripts\activate (Windows PowerShell)
+
 pip install -r requirements.txt
+
 ```
 
 ## Usage
@@ -153,5 +160,12 @@ project_root/
 
 ## References
 
-- Kipf & Welling, Semi-Supervised Classification with Graph Convolutional Networks, ICLR 2017.
-- General connectomics practice for SC/FC modelling and graph normalization in neuroimaging literature.
+1. Kipf, T. N., & Welling, M. (2017, April). _Semi-supervised classification with graph convolutional networks_. International Conference on Learning Representations (ICLR). [https://arxiv.org/abs/1609.02907](https://arxiv.org/abs/1609.02907) ([arXiv][1])
+
+2. Li, Y., Wei, Q., Adeli, E., Pohl, K. M., & Zhao, Q. (2022). _Joint graph convolution for analyzing brain structural and functional connectome_. In **Medical Image Computing and Computer Assisted Intervention – MICCAI 2022** (Lecture Notes in Computer Science). Springer. [https://doi.org/10.1007/978-3-031-16431-6_22](https://doi.org/10.1007/978-3-031-16431-6_22) ([MICCAI Conferences][2])
+
+3. Yao, D., Liu, M., Lin, C., Li, H., Zhang, J., & Shen, D. (2021). A mutual multi-scale triplet graph convolutional network for classification of brain disorders using functional or structural connectivity. _IEEE Transactions on Medical Imaging, 40_(4), 1279–1289. [https://doi.org/10.1109/TMI.2021.3051604](https://doi.org/10.1109/TMI.2021.3051604) ([PMC][3])
+
+4. Li, Y., Shafipour, R., Mateos, G., & Zhang, Z. (2019, November). _Mapping brain structural connectivities to functional networks via graph encoder–decoder with interpretable latent embeddings_. In **2019 IEEE Global Conference on Signal and Information Processing (GlobalSIP)**. [https://www.hajim.rochester.edu/ece/sites/gmateos/pubs/brain/SCFC_GLOBALSIP19.pdf](https://www.hajim.rochester.edu/ece/sites/gmateos/pubs/brain/SCFC_GLOBALSIP19.pdf) ([hajim.rochester.edu][5])
+
+5. Liu, J., Ma, G., Jiang, F., Lu, C.-T., Yu, P. S., & Ragin, A. B. (2019). Community-preserving graph convolutions for structural and functional joint embedding of brain networks. _arXiv Preprint_. [https://arxiv.org/abs/1911.03583](https://arxiv.org/abs/1911.03583) ([arXiv][6])
