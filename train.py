@@ -170,7 +170,12 @@ def evaluate(model, loader, device):
     except ValueError:
         auc = 0.5
     cm = confusion_matrix(ys, preds)
-    return {"acc": acc, "bacc": bacc, "f1": f1, "auc": auc, "cm": cm}
+    tn, fp, fn, tp = cm.ravel()
+
+    sensitivity = tp / (tp + fn) if (tp + fn) > 0 else float("nan")
+    specificity = tn / (tn + fp) if (tn + fp) > 0 else float("nan")
+
+    return {"acc": acc, "bacc": bacc, "f1": f1, "auc": auc, "cm": cm,"sensitivity":sensitivity,"specificity":specificity}
 
 def tensors_from_subjects(subjects):
     A_sc = torch.stack([s["A_sc"] for s in subjects])  # [S,N,N]
@@ -260,7 +265,7 @@ def run_stratified_cv_allfolds(subjects, model_cls, *,k_folds=5, batch_size=4, e
         # eval on validation fold
         m = evaluate(model, val_loader, device)
         fold_stats.append(m)
-        print(f"Acc={m['acc']:.3f}  BalAcc={m['bacc']:.3f}  F1={m['f1']:.3f}  AUC={m['auc']:.3f}")
+        print(f"Acc={m['acc']:.3f}  BalAcc={m['bacc']:.3f}  F1={m['f1']:.3f} "f"AUC={m['auc']:.3f}  sensitivity={m['sensitivity']:.3f}  Specificity={m['specificity']:.3f}")
         print(f"Confusion Matrix (array):\n{m['cm']}")
 
         # confusion-matrix heatmap
@@ -271,7 +276,7 @@ def run_stratified_cv_allfolds(subjects, model_cls, *,k_folds=5, batch_size=4, e
         ax.set_title(f"Confusion Matrix — Fold {fold}")
         plt.tight_layout()
         plt.savefig(f"cm_fold_{fold}.png", dpi=200)
-        #plt.show()
+        plt.show()
 
     # Summarize across folds 
     keys = ["acc", "bacc", "f1", "auc"]
